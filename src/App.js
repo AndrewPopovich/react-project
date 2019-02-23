@@ -1,29 +1,31 @@
-import React, {useState} from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import Person from './Person/Person';
 
-const app = props => {
-	const [personsState, setStateFunc] = useState({
-		persons: ['Andrew', 'Max', 'Tanya'],
-		index: 0
-	});
+class App extends Component {
 
-	const switchNameHandler = () => {
-		const randomNum = Math.floor(Math.random() * 3);
-		setStateFunc({
-			...personsState,
-			index: randomNum
-		});
+	state = {
+		persons: [
+			{
+				id: 0,
+				name: 'Andrew',
+				age: 24
+			},
+			{
+				id: 1,
+				name: 'Max',
+				age: 21
+			},
+			{
+				id: 2,
+				name: 'Tanya',
+				age: 29
+			}
+		],
+		showPerson: false
 	};
 
-	const onChangeHandler = event => {
-		setStateFunc({
-			persons: [event.target.value, 'Max', event.target.value],
-			index: 0
-		});
-	};
-
-	const style = {
+	style = {
 		backgroundColor: 'white',
 		font: 'inherit',
 		border: '1px solid blue',
@@ -31,19 +33,58 @@ const app = props => {
 		cursor: 'pointer'
 	};
 
-	return (
-		<div>
-			<button
-				onClick={switchNameHandler}
-				style={style}
-			>Switch name</button>
-			<Person
-				name={personsState.persons[personsState.index]}
-				click={switchNameHandler}
-				change={onChangeHandler}
-			> Test </Person>
-		</div>
-	)
-};
+	switchNameHandler = () => {
+		this.setState({
+			showPerson: !this.state.showPerson
+		});
+	};
 
-export default app;
+	onChangeHandler = (event, id) => {
+		const index = this.state.persons.findIndex(p => p.id === id);
+		const persons = [...this.state.persons];
+		persons[index].name = event.target.value;
+
+		this.setState({persons});
+	};
+
+	deletePersonHandler = (index) => {
+		const persons = this.state.persons.slice();
+		persons.splice(index, 1);
+		this.setState({persons: persons});
+	};
+
+	showPersons = () => {
+		if (this.state.showPerson) {
+			return (
+				<div>
+					{this.state.persons.map((item, index) => {
+						return (
+							<Person
+								name={item.name}
+								click={() => this.deletePersonHandler(index)}
+								change={event => this.onChangeHandler(event, item.id)}
+								key={item.id}
+							> Test </Person>
+						);
+					})}
+				</div>
+			)
+		}
+		return null;
+	};
+
+	render() {
+		return (
+			<div>
+				<button
+					onClick={this.switchNameHandler}
+					style={this.style}
+				>Switch name
+				</button>
+				{this.showPersons()}
+			</div>
+		)
+	};
+}
+
+export default App;
