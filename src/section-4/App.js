@@ -41,7 +41,7 @@ export default class App extends Component {
 	render() {
 		return (
 			<div>
-				<input onChange={this.changeInputHandler}/>
+				<input onChange={this.changeInputHandler} value={this.state.inputText}/>
 				<p>Length of input string is {this.state.inputText.length}</p>
 				<ValidationComponent textLength={this.state.inputText.length}/>
 				{this.renderListOfLetters()}
