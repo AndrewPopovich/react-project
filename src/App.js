@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Person from './Person/Person';
+import Radium, {StyleRoot} from 'radium';
 
 class App extends Component {
 
@@ -26,11 +27,16 @@ class App extends Component {
 	};
 
 	style = {
-		backgroundColor: 'white',
+		backgroundColor: 'green',
+		color: 'white',
 		font: 'inherit',
 		border: '1px solid blue',
 		padding: '8px',
-		cursor: 'pointer'
+		cursor: 'pointer',
+		':hover': {
+			backgroundColor: 'lightgreen',
+			color: 'black'
+		}
 	};
 
 	switchNameHandler = () => {
@@ -53,6 +59,20 @@ class App extends Component {
 		this.setState({persons: persons});
 	};
 
+	buttonStyle = () => {
+		if (!this.state.showPerson) {
+			return this.style;
+		} else {
+			const redButton = {...this.style};
+			redButton.backgroundColor = 'red';
+			redButton[':hover'] = {
+				backgroundColor: 'salmon',
+				color: 'black'
+			};
+			return redButton;
+		}
+	};
+
 	showPersons = () => {
 		if (this.state.showPerson) {
 			return (
@@ -73,18 +93,23 @@ class App extends Component {
 		return null;
 	};
 
+	classes = ['red', 'bold'].join(' ');
+
 	render() {
 		return (
-			<div>
+			<StyleRoot>
+				<div className={"App"}>
+					<p className={this.state.persons.length <= 2 ? this.classes : null}>This is work fine!</p>
 				<button
 					onClick={this.switchNameHandler}
-					style={this.style}
+					style={this.buttonStyle()}
 				>Switch name
 				</button>
 				{this.showPersons()}
 			</div>
+			</StyleRoot>
 		)
 	};
 }
 
-export default App;
+export default Radium(App);
